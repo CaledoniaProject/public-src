@@ -1,0 +1,24 @@
+<!-- 
+https://azure.microsoft.com/en-us/blog/detecting-in-memory-attacks-with-sysmon-and-azure-security-center/?cdn=disable
+-->
+<Sysmon schemaversion="3.30">
+<EventFiltering>
+  <!-- Restrict logging to access targeting svchost.exe and verclsid.exe -->
+  <ProcessAccess onmatch="exclude">
+    <TargetImage condition="excludes">verclsid.exe</TargetImage>
+    <TargetImage condition="excludes">svchost.exe</TargetImage>
+  </ProcessAccess>
+  <!-- Process access requests with suspect privileged access,
+       or call trace indicative of unknown modules -->
+     <ProcessAccess onmatch="include">
+         <GrantedAccess condition="is">0x1F0FFF</GrantedAccess>
+         <GrantedAccess condition="is">0x1F1FFF</GrantedAccess>
+         <GrantedAccess condition="is">0x1F2FFF</GrantedAccess>
+         <GrantedAccess condition="is">0x1F3FFF</GrantedAccess>
+             ...
+         <GrantedAccess condition="is">0x1FFFFF</GrantedAccess>
+         <CallTrace condition="contains">unknown</CallTrace>
+     </ProcessAccess>
+</EventFiltering>
+</Sysmon>
+

@@ -1,0 +1,16 @@
+import android.util.*;
+import android.content.pm.*;
+
+List<ApplicationInfo> installed = getPackageManager().getInstalledApplications(0);
+List<Integer> uids = new ArrayList();
+for (ApplicationInfo i : installed)
+{
+    Log.i("uids", i.packageName);
+    if (i.packageName.compareTo("com.qihoo360.mobilesafe") == 0
+            || i.packageName.compareTo("com.qihoo.antivirus") == 0)
+    {
+        uids.add(Integer.valueOf(i.uid));
+    }
+}
+
+Log.i("uids", uids.toString());

@@ -1,0 +1,5 @@
+define show_current
+  set $thread_info = $sp & 0xffffe000
+  printf "$current=0x%08lX\n", (((struct thread_info *)($current))->task)
+end
+

@@ -1,0 +1,118 @@
+﻿<!-- sysmon schema 会变的 https://gist.github.com/olafhartong/a6cdfa27352c463eac5e78f9252cc5f4 -->
+
+<Sysmon schemaversion="4.22">
+	<!--SYSMON META CONFIG-->
+	<HashAlgorithms>md5,sha256,IMPHASH</HashAlgorithms>
+	<CheckRevocation/>
+
+	<EventFiltering>
+
+	<!-- 1 -->
+	<!--DATA: UtcTime, ProcessGuid, ProcessID, Image, FileVersion, Description, Product, Company, CommandLine, CurrentDirectory, User, LogonGuid, LogonId, TerminalSessionId, IntegrityLevel, Hashes, ParentProcessGuid, ParentProcessId, ParentImage, ParentCommandLine, RuleName-->
+	<RuleGroup name="" groupRelation="or">
+		<ProcessCreate onmatch="exclude">			
+		</ProcessCreate>
+	</RuleGroup>
+	
+	<!-- 2 -->
+	<!--DATA: UtcTime, ProcessGuid, ProcessId, Image, TargetFilename, CreationUtcTime, PreviousCreationUtcTime-->
+	<RuleGroup name="" groupRelation="or">
+		<FileCreateTime onmatch="exclude">
+		</FileCreateTime>
+	</RuleGroup>
+
+	<!-- 3 -->
+	<!--DATA: UtcTime, ProcessGuid, ProcessId, Image, User, Protocol, Initiated, SourceIsIpv6, SourceIp, SourceHostname, SourcePort, SourcePortName, DestinationIsIpV6, DestinationIp, DestinationHostname, DestinationPort, DestinationPortName-->
+	<RuleGroup name="" groupRelation="or">
+		<NetworkConnect onmatch="exclude">
+		</NetworkConnect>
+	</RuleGroup>
+
+	<!-- 5 -->
+	<!--DATA: UtcTime, ProcessGuid, ProcessId, Image-->
+	<RuleGroup name="" groupRelation="or">
+		<ProcessTerminate onmatch="exclude">
+		</ProcessTerminate>
+	</RuleGroup>
+
+	<!-- 6 -->
+	<!--DATA: UtcTime, ImageLoaded, Hashes, Signed, Signature, SignatureStatus-->
+	<RuleGroup name="" groupRelation="or">
+		<DriverLoad onmatch="exclude">
+		</DriverLoad>
+	</RuleGroup>
+
+	<!-- 7 -->
+	<!--DATA: UtcTime, ProcessGuid, ProcessId, Image, ImageLoaded, Hashes, Signed, Signature, SignatureStatus-->
+	<RuleGroup name="" groupRelation="or">
+		<ImageLoad onmatch="include">
+		</ImageLoad>
+	</RuleGroup>
+
+	<!-- 8 -->
+	<!--DATA: UtcTime, SourceProcessGuid, SourceProcessId, SourceImage, TargetProcessId, TargetImage, NewThreadId, StartAddress, StartModule, StartFunction-->
+	<RuleGroup name="" groupRelation="or">
+		<CreateRemoteThread onmatch="exclude">
+		</CreateRemoteThread>
+	</RuleGroup>
+
+	<!-- 9 -->
+	<!--DATA: UtcTime, ProcessGuid, ProcessId, Image, Device-->
+	<RuleGroup name="" groupRelation="or">
+		<RawAccessRead onmatch="include">
+			<!--NOTE: Using "include" with no rules means nothing in this section will be logged-->
+		</RawAccessRead>
+	</RuleGroup>
+
+	<!-- 10 -->
+	<!--DATA: UtcTime, SourceProcessGuid, SourceProcessId, SourceThreadId, SourceImage, TargetProcessGuid, TargetProcessId, TargetImage, GrantedAccess, CallTrace-->
+	<RuleGroup name="" groupRelation="or">
+		<ProcessAccess onmatch="include">
+		</ProcessAccess>
+	</RuleGroup>
+
+	<!-- 11 -->
+	<!--DATA: UtcTime, ProcessGuid, ProcessId, Image, TargetFilename, CreationUtcTime-->
+	<RuleGroup name="" groupRelation="or">
+		<FileCreate onmatch="include">			
+		</FileCreate>
+	</RuleGroup>
+
+	<!-- 12 13 14 -->
+	<!--DATA: EventType, UtcTime, ProcessGuid, ProcessId, Image, TargetObject, Details (can't filter on), NewName (can't filter on)-->
+	<RuleGroup name="" groupRelation="or">
+		<RegistryEvent onmatch="include">		
+		</RegistryEvent>
+	</RuleGroup>
+
+	<!-- 15 -->
+	<!--DATA: UtcTime, ProcessGuid, ProcessId, Image, TargetFilename, CreationUtcTime, Hash-->
+	<RuleGroup name="" groupRelation="or">
+		<FileCreateStreamHash onmatch="include">
+		</FileCreateStreamHash>
+	</RuleGroup>
+
+	<!-- 17 18 -->
+	<!--DATA: UtcTime, ProcessGuid, ProcessId, PipeName, Image-->
+	<RuleGroup name="" groupRelation="or">
+		<PipeEvent onmatch="exclude">
+		</PipeEvent>
+	</RuleGroup>
+
+	<!-- 19 20 21 -->
+	<!--DATA: EventType, UtcTime, Operation, User, Name, Type, Destination, Consumer, Filter-->
+	<RuleGroup name="" groupRelation="or">
+		<WmiEvent onmatch="exclude">
+			<!--NOTE: Using exclude with no rules means everything will be logged-->
+		</WmiEvent>
+	</RuleGroup>
+
+	<!-- 22 -->
+	<!--DATA: RuleName, UtcTime, ProcessGuid, ProcessId, QueryName, QueryType, QueryStatus, QueryResults (can't filter on)-->
+	<RuleGroup name="" groupRelation="or">
+		<DnsQuery onmatch="exclude">
+		</DnsQuery>
+	</RuleGroup>
+
+	</EventFiltering>
+</Sysmon>

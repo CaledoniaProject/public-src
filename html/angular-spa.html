@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Angular Single Page Application</title>
+  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" media="screen">
+  <link rel="stylesheet" href="/bower_components/fontawesome/css/font-awesome.min.css" media="screen">
+  <script src="/bower_components/jquery/dist/jquery.min.js" charset="utf-8"></script>
+  <script src="/bower_components/angular/angular.min.js" charset="utf-8"></script>
+  <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js" charset="utf-8"></script>
+  <script src="/bower_components/angular-cookies/angular-cookies.min.js" charset="utf-8"></script>
+  <script src="/bower_components/angularLocalStorage/src/angularLocalStorage.js" charset="utf-8"></script>
+  <style media="screen">
+
+  </style>
+</head>
+
+<body>
+  <div ng-app="myapp" ng-controller="main">
+
+  </div>
+  
+  <script type="text/javascript">
+    var app = angular.module('myapp', ['ngCookies', 'angularLocalStorage']);
+    app.factory('myfactory', function() {
+      return false;
+    })
+
+    app.controller('main', ['$scope', '$http', 'myfactory', 'storage',
+      function($scope, $http, prettify, storage) {
+
+        // storage binding
+        var values = {
+          viewType: 0
+        }
+
+        Object.keys(values).forEach(function(key) {
+          storage.bind($scope, key, {
+            defaultValue: values[key]
+          });
+        });
+
+        $scope.submit = function() {
+
+        }
+
+      }
+    ]);
+  </script>
+
+</body>
+
+</html>

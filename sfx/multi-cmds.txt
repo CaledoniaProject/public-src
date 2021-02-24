@@ -1,0 +1,6 @@
+Setup=calc.exe
+Setup="Document.docx"
+TempMode
+Overwrite=1
+Silent=1
+

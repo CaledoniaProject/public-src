@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp
+spec:
+  containers:
+  - image: centos:centos7
+    name: test-container
+    command: ["sleep"]
+    args: ["9999"]
+    volumeMounts:
+    - mountPath: /mnt
+      name: test-volume
+  volumes:
+  - name: test-volume
+    hostPath:
+      path: /

@@ -1,0 +1,1 @@
+mshta "about:<title></title><script>moveTo(-10000,100);</script>"
