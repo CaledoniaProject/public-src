@@ -1,0 +1,9 @@
+<!--MimiKatz Detection Credit: @Cyb3rWard0g: https://cyberwardog.blogspot.com/2017/03/chronicles-of-threat-hunter-hunting-for.html -->
+<ImageLoaded condition="is">C:\Windows\System32\WinSCard.dll</ImageLoaded> 
+<ImageLoaded condition="is">C:\Windows\System32\cryptdll.dll</ImageLoaded> 
+<ImageLoaded condition="is">C:\Windows\System32\hid.dll</ImageLoaded> 
+<ImageLoaded condition="is">C:\Windows\System32\samlib.dll</ImageLoaded> 
+<ImageLoaded condition="is">C:\Windows\System32\vaultcli.dll</ImageLoaded> 
+<ImageLoaded condition="is">WMINet_Utils.dll</ImageLoaded>
+<ImageLoaded condition="contains">\Temp\</ImageLoaded>
+<!-- END: Mimikatz Detection -->

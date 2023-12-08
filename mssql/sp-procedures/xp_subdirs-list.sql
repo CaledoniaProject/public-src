@@ -1,0 +1,1 @@
+exec master.dbo.xp_subdirs 'C:\\'

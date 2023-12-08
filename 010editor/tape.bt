@@ -1,0 +1,481 @@
+typedef ubyte UINT8;
+typedef byte INT8;
+typedef UINT64 MTF_PBA;
+const int MaxTransactionIdSize = 16;
+const int MTF_RAID_SQL = 0xf00000ad;
+local INT64 lastValidBlock = 0, lastValidPos = 0, blockAlign = 0;
+
+struct LSN
+{
+    ULONG m_fSeqNo;
+    ULONG m_blockOffset;
+    USHORT m_slotId;
+};
+typedef LSN SQL_LSN;
+
+struct LSN128
+{
+    UINT64 m_Low;
+    UINT64 m_High;
+};
+
+struct TDSCOLLATION
+{
+    DWORD dwWCID;
+    BYTE bSortid;
+};
+
+struct MTF_TAPE_ADDRESS
+{ 
+    UINT16 size;
+    UINT16 offset;
+};
+
+struct MTF_DATE_TIME
+{
+    UCHAR m_data[5];
+};
+
+struct MTF_UUID
+{
+    UINT8 m_data[16];
+};
+
+struct MTF_DB_HDR
+{
+    UINT32 m_dblk_type;
+    UINT32 m_attributes;
+    UINT16 m_first_event_offset;
+    UINT8 m_os_id;
+    UINT8 m_os_version;
+    UINT64 m_displayable_size;
+    UINT64 m_format_logical_address;
+    UINT16 m_reserved_for_mbc;
+    UINT8 m_reserved1;
+    UINT32 m_control_block_id;
+    UINT8 m_reserved2;
+    MTF_TAPE_ADDRESS m_os_specific_data;
+    UINT8 m_string_type;
+    UINT8 m_reserved3;
+    UINT16 m_header_checksum;
+};
+
+struct MTF_TAPE
+{
+    MTF_DB_HDR hdr;
+    UINT32 m_media_family_id;   
+    UINT32 m_tape_attributes;
+    UINT16 m_media_sequence_number;
+    UINT16 m_password_encryption_algorithm;
+    UINT16 m_soft_filemark_block_size;
+    UINT16 m_mbc_type;
+    MTF_TAPE_ADDRESS m_media_name;
+    MTF_TAPE_ADDRESS m_media_description;
+    MTF_TAPE_ADDRESS m_media_password;
+    MTF_TAPE_ADDRESS m_software_name;
+    UINT16 m_format_logical_block_size;
+    UINT16 m_software_vendor_id;
+    MTF_DATE_TIME m_media_date;
+    UINT8 m_mtf_major_version;
+};
+
+struct MTF_SSET
+{
+    MTF_DB_HDR hdr;
+    UINT32 m_sset_attributes;
+    UINT16 m_password_encryption_algorithm;
+    UINT16 m_software_compression_algorithm;
+    UINT16 m_software_vendor_id;
+    UINT16 m_data_set_number;
+    MTF_TAPE_ADDRESS m_data_set_name;
+    MTF_TAPE_ADDRESS m_data_set_description;
+    MTF_TAPE_ADDRESS m_data_set_password;
+    MTF_TAPE_ADDRESS m_user_name;
+    MTF_PBA m_physical_block_address;
+    MTF_DATE_TIME m_media_write_date;
+    UINT8 m_software_major_version;
+    UINT8 m_software_minor_version;
+    INT8 m_time_zone;
+    UINT8 m_mtf_minor_version;
+    UINT8 m_media_catalog_version;
+};
+
+struct MTF_ESET
+{
+    MTF_DB_HDR hdr;
+    UINT32 m_eset_attributes;
+    UINT32 m_corrupt_file_count;
+    MTF_PBA m_set_map_pba;
+    MTF_PBA m_file_detail_pba;
+    UINT16 m_fdd_media_sequence_number;
+    UINT16 m_data_set_number;
+    MTF_DATE_TIME m_media_write_date;
+};
+
+struct MTF_VOLB
+{
+    MTF_DB_HDR hdr;
+    UINT32 m_volb_attributes;
+    MTF_TAPE_ADDRESS m_device_name;
+    MTF_TAPE_ADDRESS m_volume_name;
+    MTF_TAPE_ADDRESS m_machine_name;
+    MTF_DATE_TIME m_media_write_date;
+};
+
+struct MTF_SFMB
+{
+    MTF_DB_HDR hdr;
+    UINT32 m_filemark_entry_count;
+    UINT32 m_filemark_entries_used;
+    MTF_PBA m_previous_filemarks [1];    
+};
+
+struct MTF_MSCI
+{
+    MTF_DB_HDR hdr;
+    UINT32 m_msci_attributes;   
+};
+
+struct MTF_MSLS
+{
+    MTF_DB_HDR hdr;
+    UINT32 m_msls_attributes;
+};
+
+struct MTF_MSTL
+{
+    MTF_DB_HDR hdr;
+    UINT32 m_mstl_attributes;
+    UINT32 m_io_size;
+    UINT64 m_starting_offset <comment="starting offset in physical log file">;
+    UINT64 m_ending_offset <comment="ending offset in physical log file">;
+    UINT32 m_file_number <comment="log file's db FileId">;
+    MTF_TAPE_ADDRESS m_log_header;
+    MTF_DATE_TIME m_file_creation_time;
+};
+
+struct MTF_STREAM_HDR
+{
+    UINT32 m_id;
+    UINT16 m_file_system_attributes;
+    UINT16 m_media_format_attributes;
+    UINT64 m_length;
+    UINT16 m_data_encryption_algorithm;
+    UINT16 m_data_compression_algorithm;
+    UINT16 m_header_checksum;
+};
+
+struct MTF_RAID
+{
+    MTF_STREAM_HDR hdr;
+    MTF_UUID m_mediaSetId;
+    UINT32 m_raid_type;
+    UINT16 m_familyCount;
+    UINT8 m_mirrorCount;
+    UINT8 m_mirrorIndex;
+    UINT16 m_familyIndex;
+    UINT16 m_pad;
+    UINT32 m_striping_size;
+};
+
+struct SQL_RECOVERY_FORK_NAME
+{
+    LSN m_lsn;
+    USHORT m_reserved;
+    MTF_UUID m_guid;
+};
+
+struct SQL_RECOVERY_FORK_STACK
+{
+    SQL_RECOVERY_FORK_NAME m_stack[2];
+};
+
+struct SQL_HEADER
+{
+    UINT32 m_type;
+    UINT32 m_size;      
+};
+
+struct SQL_CONFIG_INFO
+{
+    SQL_HEADER hdr;
+    UINT32 m_flags;
+    UINT32 m_database_file_count;
+    UINT32 m_log_file_count;
+    UINT32 m_next_id;
+    UINT32 m_server_version;
+    UINT32 m_processor;
+    SQL_LSN m_first_lsn;
+    SQL_LSN m_last_lsn;
+    SQL_LSN m_checkpoint_lsn;
+    SQL_LSN m_last_full_base_lsn;
+    MTF_DATE_TIME m_creation_date;
+    MTF_DATE_TIME m_backup_start;
+    MTF_DATE_TIME m_backup_finish;
+    UINT8 m_backup_type;
+    UINT8 m_sort_order;
+    UINT8 m_sort_order_status;
+    UINT8 m_code_page;
+    UINT8 m_compatibility_level;
+    UINT16 m_database_id;
+    UINT16 m_database_version;
+    UINT64 m_backup_size;
+    MTF_TAPE_ADDRESS m_database_name;
+    MTF_TAPE_ADDRESS m_server_name;
+    UINT32 m_minimum_restart_page;
+    UINT32 m_unicode_locale;
+    UINT32 m_unicode_compare_flags;
+    MTF_UUID m_binding_id;
+    UINT32 m_file_generation;
+    SQL_RECOVERY_FORK_STACK m_recovery_fork_name_stack;
+    MTF_UUID m_last_full_base_guid;
+    TDSCOLLATION m_collation_id;
+    BYTE m_pad [3];
+    MTF_UUID m_database_family_id;
+
+    UINT32 m_maxTransferSize;
+    UINT32 m_database_status;
+    SQL_LSN m_LogChainOrigin;
+    UINT16 m_LogChainPad;
+    SQL_LSN m_SingleDiffBaseLsn;
+    UINT16 m_SingleBaseLsnPad;
+    MTF_UUID m_SingleDiffBaseGuid;
+    BYTE m_Unused [MaxTransactionIdSize];
+    SQL_RECOVERY_FORK_NAME m_RestorePathOrigin;
+    SQL_LSN m_OldestActiveBackupLsn;
+    UINT16 m_OABLSNPad;
+};
+
+struct SQL_FILEGROUP_INFO
+{
+    SQL_HEADER hdr;
+    UINT32 m_status;
+    UINT16 m_group_id;
+    UINT16 m_allocation_policy;
+    MTF_TAPE_ADDRESS m_group_name;
+
+    UINT8 m_ContentType;
+    BYTE m_Pad [3];
+    MTF_UUID m_Guid;      
+    UINT32 m_Flags;
+    UINT32 m_LogGroupId;
+};
+
+struct SQL_FILE_INFO
+{
+    SQL_HEADER hdr;
+    UINT32 m_flags;
+    UINT32 m_file_header_size;
+    UINT32 m_page_size;
+    UINT32 m_file_number;
+    UINT32 m_backed_up_page_count;
+    UINT32 m_file_type;
+    UINT32 m_source_file_block_size;
+    UINT16 m_group_id;
+    UINT16 m_reserved1;
+    UINT64 m_file_size;
+    MTF_TAPE_ADDRESS m_logical_name;
+    MTF_TAPE_ADDRESS m_physical_name;
+    SQL_LSN m_first_create_index_lsn;
+    SQL_LSN m_first_nonlogged_lsn;
+    SQL_LSN m_first_update_lsn;
+    UINT64 m_file_max_size;
+    UINT64 m_file_growth;
+    SQL_LSN m_backup_lsn;
+    UINT16 m_reserved2;
+    UINT64 m_file_min_size;
+    UINT64 m_user_shrink_size;
+    UINT64 m_actual_shrink_size;
+    SQL_LSN m_create_lsn;
+    SQL_LSN m_drop_lsn;
+    SQL_LSN m_differential_base_lsn;
+    BYTE m_pad [2];
+    MTF_UUID m_differential_base_guid;
+
+    MTF_UUID m_unique_id;
+    LSN128 m_firstLsn;
+    LSN128 m_lastLsn;
+    LSN128 m_checkpointLsn;
+    UINT64 m_backed_up_byte_count;
+    UINT32 m_logGroupId;
+    FILETIME m_DifferentialBaseTime;
+    UINT32 m_ContainerState;
+    SQL_LSN m_ReadOnlyLsn;
+    SQL_LSN m_ReadWriteLsn;
+    SQL_LSN m_ReadOnlyBaseLsn;
+    SQL_LSN m_LastUpdateLsn;
+    SQL_LSN m_RedoStartLsn;
+    SQL_LSN m_RedoTargetLsn;
+    SQL_LSN m_ForkLsn;
+    LSN128 m_SecondaryBaseLsn;
+    UINT64 m_ForkVC;
+    GUID m_RedoStartGuid;
+    GUID m_RedoTargetGuid;
+};
+
+int CreateSQLHeader()
+{
+    FSeek(lastValidPos);
+
+    local char sqlheader_type[4] = ReadString(lastValidPos, 4);
+    local INT64 off = 0;
+    Printf("SQL_HEADER_TYPE = %s (0x%X)\n", sqlheader_type, lastValidPos);
+
+    if (sqlheader_type == "SCIN")
+    {
+        SQL_CONFIG_INFO sqlConfigInfo;
+        off = sqlConfigInfo.hdr.m_size;
+    }
+    else if (sqlheader_type == "SFGI")
+    {
+        SQL_FILEGROUP_INFO sqlFileGroupInfo;
+        off = sqlFileGroupInfo.hdr.m_size;
+    }
+    else if (sqlheader_type == "SFIN")
+    {
+        SQL_FILE_INFO sqlFileInfo;
+        off = sqlFileInfo.hdr.m_size;
+    }
+    else
+    {
+        Printf("Unknown sql header type\n");
+        return -1;
+    }
+
+    lastValidPos = lastValidPos + off;
+    return 0;
+}
+
+int CreateStream()
+{
+    FSeek(lastValidPos);
+    if (lastValidPos == FileSize())
+    {
+        Printf("All data structure parsed successfully\n");
+        Exit(0);
+    }
+
+    local char stream_type[4] = ReadString(lastValidPos, 4);
+    Printf("STREAM_TYPE = %s (0x%X)\n", stream_type, lastValidPos);
+
+    if (stream_type == "RAID")
+    {
+        MTF_RAID raid <comment="RAID Stream">;
+        if (raid.m_raid_type != MTF_RAID_SQL)
+        {
+            Printf("Invalid RAID type\n");
+            return -1;
+        }
+
+        lastValidPos = FTell();
+    }
+    else if (stream_type == "MQCI")
+    {
+        MTF_STREAM_HDR hdr <comment="SQL Config Stream">;
+        lastValidPos = FTell();
+        while (CreateSQLHeader() != -1) {}
+    }
+    else if (stream_type == "SPAD")
+    {
+        MTF_STREAM_HDR hdr <comment="SPAD">;
+        lastValidPos = FTell() + hdr.m_length;
+        lastValidPos = lastValidPos + lastValidPos % 4;
+        return -1;
+    }
+    else if (stream_type == "APAD")
+    {
+        MTF_STREAM_HDR hdr <comment="APAD">;
+        lastValidPos = FTell() + hdr.m_length;
+    }
+    else if (stream_type == "OTCP")
+    {
+        MTF_STREAM_HDR hdr <comment="OTCP">;
+        lastValidPos = FTell() + hdr.m_length;
+    }
+    else if (stream_type == "TSMP")
+    {
+        MTF_STREAM_HDR hdr <comment="MBC_LMO_SET_MAP_DATA">;
+        lastValidPos = FTell() + hdr.m_length;
+    }   
+    else if (stream_type == "MQTL")
+    {
+        MTF_STREAM_HDR hdr <comment="SQL Log Stream">;
+        lastValidPos = FTell() + hdr.m_length;
+    }
+    else
+    {
+        Printf("Unknown stream type\n");
+        return -1;
+    }
+
+    Printf("FTell() mod 4 = %d\n", lastValidPos % 4);
+    lastValidPos = lastValidPos + lastValidPos % 4;
+    return 0;
+}
+
+int CreateDBLK()
+{
+    FSeek(lastValidPos);
+    lastValidBlock = FTell();
+
+    local char dblk_type[4] = ReadString(lastValidPos, 4);
+    local INT64 off = 0;
+
+    Printf("DBLK_TYPE = %s (0x%X)\n", dblk_type, lastValidPos);
+    if (dblk_type == "TAPE")
+    {       
+        MTF_TAPE tape <comment="Tape Header Descriptor Block">;
+        off = tape.hdr.m_first_event_offset;
+    }
+    else if (dblk_type == "SSET")
+    {
+        MTF_SSET sset <comment="The Start of Data Set Descriptor Block">;
+        off = sset.hdr.m_first_event_offset;
+    }
+    else if (dblk_type == "VOLB")
+    {
+        MTF_VOLB volb <comment="Volume Descriptor Block">;
+        off = volb.hdr.m_first_event_offset;
+    }
+    else if (dblk_type == "SFMB")
+    {
+        MTF_SFMB sfmb <comment="Soft Filemark Descriptor Block">;;
+        off = sfmb.hdr.m_first_event_offset;
+    }
+    else if (dblk_type == "MSCI")
+    {
+        MTF_MSCI msci <comment="SQL Configuration Information Descriptor Block">;
+        off = msci.hdr.m_first_event_offset;
+    }
+    else if (dblk_type == "MSTL")
+    {
+        MTF_MSTL mstl <comment="SQL Data Descriptor Block">;
+        off = mstl.hdr.m_first_event_offset;
+    }
+    else if (dblk_type == "MSLS")
+    {
+        MTF_MSLS mstl <comment="SQL Log Sequence Number Descriptor Block">;
+        off = mstl.hdr.m_first_event_offset;
+    }
+    else if (dblk_type == "ESET")
+    {
+        MTF_ESET eset <comment="End of Data Set Descriptor Block">;
+        off = eset.hdr.m_first_event_offset;
+    }
+    else
+    {
+        Printf("Unknown DBLK block at 0x%X\n", lastValidPos);
+        return -1;
+    }
+
+    lastValidPos = lastValidPos + off;
+    Printf("lastValidPos = 0x%X\n", lastValidPos);
+    
+    while (CreateStream() != -1) {}
+
+    FSeek(lastValidBlock + off);
+    return 0;
+}
+
+while (CreateDBLK() != -1) {}
+Printf("Finished\n");

@@ -1,0 +1,5 @@
+MATCH p = shortestPath((n)-[r*1..]->(g2:Group {name:'DOMAIN ADMINS@INTERNAL.LOCAL}))
+WITH p
+WHERE NONE (x in NODES(p) WHERE x.name = 'SKIPTHISUSER@INTERNAL.COM')
+RETURN p
+

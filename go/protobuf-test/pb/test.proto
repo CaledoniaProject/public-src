@@ -1,0 +1,14 @@
+syntax = "proto3";
+package proto;
+option go_package = "pb/";
+
+enum FOO
+{ 
+    Type1 = 0;
+};
+
+message UserInfo {
+    string message = 1;
+    int32  id      = 2;
+    FOO    type    = 3;
+};

@@ -1,0 +1,44 @@
+<!-- 
+	来自
+	https://gist.github.com/caseysmithrc/1801b831b388eb3c801c42471cc87c71 
+-->
+
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
+	<Target Name="Hello" >
+
+	<!-- Call ANY .NET API -->
+	<!--  set MSBUILDENABLEALLPROPERTYFUNCTIONS=1 -->
+	<!-- $env:MSBUILDENABLEALLPROPERTYFUNCTIONS = 1 -->
+	<!-- Check my Math ;-) http://www.cryer.co.uk/glossary/r/rsa/an_example_of_rsa_algorithm.html -->
+	
+	<!-- Example of RSA Using Only Property Functions  -->
+	
+	<PropertyGroup>  
+			<!-- This Works Example Hardcoded Not -->
+		<modulus>$([System.Numerics.BigInteger]::Multiply($([System.Numerics.BigInteger]::new(53)),$([System.Numerics.BigInteger]::new(61))))</modulus>
+		<p>$([System.Numerics.BigInteger]::new(53))</p>
+		<q>$([System.Numerics.BigInteger]::new(61))</q>
+		<m>$([System.Numerics.BigInteger]::new(123))</m>
+		<e>$([System.Numerics.BigInteger]::new(17))</e>
+		<d>$([System.Numerics.BigInteger]::new(2753))</d>
+		<c>$([System.Numerics.BigInteger]::ModPow($([System.Numerics.BigInteger]::new(123)),$([System.Numerics.BigInteger]::new(17)),$([System.Numerics.BigInteger]::Multiply($([System.Numerics.BigInteger]::new(53)),$([System.Numerics.BigInteger]::new(61))))))</c>
+		<plaintext>$([System.Numerics.BigInteger]::ModPow($([System.Numerics.BigInteger]::new(855)),$([System.Numerics.BigInteger]::new(2753)),$([System.Numerics.BigInteger]::Multiply($([System.Numerics.BigInteger]::new(53)),$([System.Numerics.BigInteger]::new(61))))))</plaintext> <!-- Derived InvMod Over Phi() -->
+		<!-- But its Not Clean Dynamic is easier ;-), More On That Later  -->
+
+	</PropertyGroup>
+	
+	<Message Text="$(m)" /> 
+	<Message Text="$(p)" />
+	<Message Text="$(q)" />
+	<Message Text="$(modulus)" /> 
+	<Message Text="$(e)" /> 
+	<Message Text="$(d)" /> 
+	<Message Text="$(c)" /> 
+	<Message Text="$(plaintext)" /> 
+	<Message Text="$([System.Windows.Forms.MessageBox]::Show('Boom Town!'))" />
+  </Target>
+
+</Project>
+
+
+

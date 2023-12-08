@@ -1,0 +1,12 @@
+; https://twitter.com/gentilkiwi/status/1421949715986403329?lang=en
+
+rpc
+filter
+add rule layer=um actiontype=block
+add condition field=if_uuid matchtype=equal data=c681d488-d850-11d0-8c52-00c04fd90f7e
+add filter
+add rule layer=um actiontype=block
+add condition field=if_uuid matchtype=equal data=df1941c5-fe89-4e79-bf10-463657acf44d
+add filter
+quit
+

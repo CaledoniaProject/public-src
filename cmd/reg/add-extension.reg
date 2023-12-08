@@ -1,0 +1,15 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Classes\.abcdefg]
+@="xxxx"
+
+[HKEY_CURRENT_USER\Software\Classes\xxxx]
+
+[HKEY_CURRENT_USER\Software\Classes\xxxx\shell]
+
+[HKEY_CURRENT_USER\Software\Classes\xxxx\shell\open]
+
+[HKEY_CURRENT_USER\Software\Classes\xxxx\shell\open\command]
+@="cmd"
+
+

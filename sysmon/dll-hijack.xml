@@ -1,0 +1,18 @@
+<Sysmon schemaversion="4.22">
+    <EventFiltering>
+        <RuleGroup name="CVE-2020-13771" groupRelation="and">
+            <ImageLoad onmatch="include">
+                <!-- Only log unsigned / invalid signature images -->
+                <SignatureStatus condition="is not">Valid</SignatureStatus>
+                <!-- Only log these images -->
+                <ImageLoaded condition="image">ldprofileui.dll</ImageLoaded>
+                <ImageLoaded condition="image">wfapi.dll</ImageLoaded>
+                <ImageLoaded condition="image">DMIAPI32.DLL</ImageLoaded>
+                <ImageLoaded condition="image">logonsrv.dll</ImageLoaded>
+                <ImageLoaded condition="image">ldprofileui.dll</ImageLoaded>
+                <ImageLoaded condition="image">OOBCredentials.dll</ImageLoaded>
+            </ImageLoad>
+        </RuleGroup>
+    </EventFiltering>
+</Sysmon>
+

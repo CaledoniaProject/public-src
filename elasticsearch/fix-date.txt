@@ -1,0 +1,19 @@
+import org.elasticsearch.common.logging.*; 
+import java.io.*;
+import java.util.*;
+
+logger  = ESLoggerFactory.getLogger('myscript');
+month   = Calendar.getInstance().get(Calendar.MONTH);
+year    = Calendar.getInstance().get(Calendar.YEAR);
+pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+
+['@timestamp', 'start_time', 'end_time'].each { field ->
+	Date date    = new SimpleDateFormat(pattern).parse(ctx._source[field]);
+	Calendar cal = Calendar.getInstance();
+	
+	cal.setTime(date);
+	cal.set(Calendar.MONTH, month);
+	cal.set(Calendar.YEAR,  year);
+
+	ctx._source[field] = new SimpleDateFormat(pattern).format(cal.getTime())
+}

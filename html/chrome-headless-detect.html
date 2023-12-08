@@ -1,0 +1,13 @@
+<script>
+	function sendResult(msg) {
+		new Image().src = 'http://192.168.154.200/?' + escape(msg)
+	}
+  if (navigator.webdriver) {
+  	sendResult("Chrome headless detected 1");
+  }
+  navigator.permissions.query({name: 'notifications'}).then(function(permissionStatus) {
+    if (Notification.permission === 'denied' && permissionStatus.state === 'prompt') {
+        sendResult("Chrome headless detected 4");
+    }
+  });
+</script>

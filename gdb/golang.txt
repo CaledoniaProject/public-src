@@ -1,0 +1,20 @@
+set pagination off
+
+break strings.Index
+commands
+p substr
+c
+end
+
+break regexp.MustCompile
+commands
+p str
+c
+end
+
+set logging file output.txt
+set logging overwrite on
+set logging on
+run -l url.txt
+
+

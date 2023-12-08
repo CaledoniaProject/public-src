@@ -1,0 +1,37 @@
+property exportFileExtension : "pdf"
+set the defaultDestinationFolder to (path to desktop folder)
+
+tell application "Pages"
+	activate
+	try
+		if not (exists document 1) then error number -128
+		
+		-- DERIVE NAME AND FILE PATH FOR NEW EXPORT FILE
+		set documentName to the name of the front document
+		if documentName ends with ".pages" then ¬
+			set documentName to text 1 thru -7 of documentName
+		
+		tell application "Finder"
+			set exportItemFileName to documentName & "." & exportFileExtension
+		end tell
+		set the targetFileHFSPath to (defaultDestinationFolder as string) & exportItemFileName
+		
+		-- EXPORT THE DOCUMENT
+		with timeout of 1200 seconds
+			export front document to file targetFileHFSPath as PDF
+		end timeout
+		
+	on error errorMessage number errorNumber
+		if errorNumber is not -128 then
+			display alert "EXPORT PROBLEM" message errorMessage
+		end if
+		error number -128
+	end try
+end tell
+
+-- SHOW THE NEW PDF FILE
+tell application "Finder"
+	activate
+	reveal document file targetFileHFSPath
+end tell
+
